@@ -11,4 +11,5 @@ class NewsRepo(
 suspend fun getBrakingNews(cuntryCode:String,page:Int)=
     RetrofitInstance.api.getBrakingNews(cuntryCode,page)
 
+    suspend fun searchNews(query:String, pageNumber: Int)=RetrofitInstance.api.getSearchForNews(query,pageNumber)
 }

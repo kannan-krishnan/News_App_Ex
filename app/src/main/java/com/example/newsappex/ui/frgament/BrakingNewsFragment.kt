@@ -34,7 +34,7 @@ class BrakingNewsFragment : Fragment(R.layout.fragment_bracking_news) {
         newsRecylerView = view.findViewById(R.id.rvBreakingNews)
         pagetationLoading = view.findViewById(R.id.paginationProgressBar)
 
-        setupRecylerView()
+        setupRecyclerView()
 
         viewModel.brakingNews.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
@@ -66,7 +66,7 @@ class BrakingNewsFragment : Fragment(R.layout.fragment_bracking_news) {
     }
 
 
-    private fun setupRecylerView() {
+    private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
         newsRecylerView.apply {
             adapter = newsAdapter

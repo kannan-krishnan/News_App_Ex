@@ -18,6 +18,9 @@ class NewsViewModel(val newsRepo: NewsRepo) : ViewModel() {
 
     var pageNumber = 1
 
+    val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    var searchNewsPage = 1
+
     init {
         getBrakingNews("IN")
     }
@@ -30,7 +33,11 @@ class NewsViewModel(val newsRepo: NewsRepo) : ViewModel() {
         brakingNews.postValue(handleResponse(response))
     }
 
-
+    fun geSearchNews(query: String) = viewModelScope.launch {
+        searchNews.postValue(Resource.Loading())
+        val response = newsRepo.searchNews(query, searchNewsPage)
+        searchNews.postValue(handleSearchNewsResponse(response))
+    }
     private fun handleResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
 
         if (response.isSuccessful) {
@@ -42,5 +49,13 @@ class NewsViewModel(val newsRepo: NewsRepo) : ViewModel() {
 
         }
     return Resource.Error(response.message(),null)
+    }
+    private fun handleSearchNewsResponse(response: Response<NewsResponse>) : Resource<NewsResponse> {
+        if(response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message(),null)
     }
 }

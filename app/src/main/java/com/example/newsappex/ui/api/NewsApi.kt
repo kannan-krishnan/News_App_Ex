@@ -11,10 +11,10 @@ import retrofit2.http.Query
  */
 interface NewsApi {
 
-    @GET("/v2/top-headlines ")
+    @GET("/v2/top-headlines")
     suspend fun getBrakingNews(@Query("country") countryCode: String="in", @Query("page") page:Int=1, @Query("apiKey") apikey:String= Constants.API_KEY) :Response<NewsResponse>
 
-    @GET("/v2/top-everything ")
+    @GET("/v2/everything")
     suspend fun getSearchForNews(@Query("q") query: String, @Query("page") page:Int=1, @Query("apiKey") apikey:String= Constants.API_KEY) :Response<NewsResponse>
 
 }

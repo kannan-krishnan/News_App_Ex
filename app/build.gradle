@@ -43,10 +43,10 @@ given block is dependencies error in room
 https://stackoverflow.com/questions/58903820/java-lang-runtimeexception-duplicate-class-org-intellij-lang-annotations-flow-f
 */
 
-configurations {
+/*configurations {
     cleanedAnnotations
     implementation.exclude group: 'org.jetbrains' , module:'annotations'
-}
+}*/
 
 dependencies {
 
@@ -68,12 +68,12 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     /*Coroutine Lifecycle Scopes*/
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
     /*room*/
     implementation 'androidx.room:room-runtime:2.5.0'
-    implementation 'androidx.room:room-compiler:2.5.0'
+    kapt 'androidx.room:room-compiler:2.5.0'
     // coroutines support room
     implementation 'androidx.room:room-ktx:2.5.0'
 

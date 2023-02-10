@@ -34,7 +34,7 @@ class ArticleFragment:Fragment(R.layout.fragment_article) {
         Log.d(TAG, "onViewCreated: ---------------------> $article")
         webView.apply {
             webViewClient= WebViewClient()
-            loadUrl(article.url)
+            article?.url?.let { loadUrl(it) }
         }
         fab.setOnClickListener {
             viewModel.savedArticle(article)

@@ -47,7 +47,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
         holder.itemView.apply {
             Glide.with(this).load(article.urlToImage).into(this.findViewById(R.id.ivArticleImage))
 
-            this.findViewById<TextView>(R.id.tvSource).text=article.source.name
+            this.findViewById<TextView>(R.id.tvSource).text=article.source?.name
             this.findViewById<TextView>(R.id.tvTitle).text=article.title
             this.findViewById<TextView>(R.id.tvDescription).text=article.description
             this.findViewById<TextView>(R.id.tvPublishedAt).text=article.publishedAt

@@ -3,6 +3,7 @@ package com.example.newsappex.ui.frgament
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.core.widget.addTextChangedListener
@@ -30,16 +31,21 @@ class SearchNewsFragment:Fragment(R.layout.fragment_search_news) {
     lateinit var viewModel: NewsViewModel
     lateinit var newsAdapter: NewsAdapter
 
-    private lateinit var newsRecylerView: RecyclerView
-    private lateinit var pagetationLoading: ProgressBar
+    private lateinit var newsRecyclerView: RecyclerView
+    private lateinit var paginationLoading: ProgressBar
     private lateinit var etSearch: EditText
     val TAG="SearchNewsFragment"
+
+    var isLoading = false
+    var isScrooling = false
+    var isLastPage = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = (activity as NewsActivity).viewModel
-        newsRecylerView = view.findViewById(R.id.rvSearchNews)
-        pagetationLoading = view.findViewById(R.id.paginationProgressBar)
+        newsRecyclerView = view.findViewById(R.id.rvSearchNews)
+        paginationLoading = view.findViewById(R.id.paginationProgressBar)
         etSearch = view.findViewById(R.id.etSearch)
 
         setupRecyclerView()
@@ -58,7 +64,8 @@ class SearchNewsFragment:Fragment(R.layout.fragment_search_news) {
 
                 it.let {
                     if (it.toString().isNotEmpty()){
-
+                        viewModel.searchNewsPage=1
+                        viewModel.clearSear()
                         viewModel.geSearchNews(it.toString())
                     }
                 }
@@ -70,6 +77,10 @@ class SearchNewsFragment:Fragment(R.layout.fragment_search_news) {
                     showHideLoading(show = false)
                     response.data?.let {
                         newsAdapter.differ.submitList(it.articles)
+
+                        if (it.articles.size <Constants.PAGE_ITEM_PER_API_CAll ){
+                            newsRecyclerView.setPadding(0,0,0,0)
+                        }
                     }
                 }
                 is Resource.Error -> {
@@ -88,19 +99,51 @@ class SearchNewsFragment:Fragment(R.layout.fragment_search_news) {
         })
 
     }
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrooling = true
+            }else{
+
+            }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val layoutManager=recyclerView.layoutManager as LinearLayoutManager
+            val  findFirstVisibleItemPosition=layoutManager.findFirstVisibleItemPosition()
+            val  visibleItem=layoutManager.childCount
+            val itemCount=layoutManager.itemCount
+
+            val notLoadingAndNotLastPage= !isLoading && !isLastPage
+            val isLastAtItem=findFirstVisibleItemPosition+visibleItem >= itemCount
+            val isNotAtBin=findFirstVisibleItemPosition>=0
+            val totalMoreThenVisitable= itemCount >=  Constants.PAGE_ITEM_PER_API_CAll
+
+            val canMoveNextPage= notLoadingAndNotLastPage && isNotAtBin && isLastAtItem && totalMoreThenVisitable && isScrooling
+            Log.d(TAG, "onScrolled:$notLoadingAndNotLastPage ,$isLastAtItem, $isNotAtBin, $totalMoreThenVisitable")
+            if (canMoveNextPage){
+
+                viewModel.geSearchNews(etSearch.text.toString())
+                isScrooling=false
+            }
+
+        }
+    }
 
     private fun showHideLoading(show: Boolean) {
-        pagetationLoading.visibility = if (show) View.VISIBLE else View.GONE
+        paginationLoading.visibility = if (show) View.VISIBLE else View.GONE
 
     }
 
 
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
-        newsRecylerView.apply {
+        newsRecyclerView.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
-
+            addOnScrollListener(this@SearchNewsFragment.scrollListener)
         }
 
 

@@ -1,7 +1,9 @@
 package com.example.newsappex.mbos
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 
 @Entity(tableName = "article")
@@ -16,4 +18,12 @@ data class Article(
     val title: String,
     val url: String,
     val urlToImage: String
-)
+): Serializable  {
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        if(url.isNullOrEmpty()){
+            result = 31 * result + url.hashCode()
+        }
+        return result
+    }
+}

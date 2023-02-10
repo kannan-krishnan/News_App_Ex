@@ -1,5 +1,6 @@
 package com.example.newsappex.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +51,8 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
             this.findViewById<TextView>(R.id.tvTitle).text=article.title
             this.findViewById<TextView>(R.id.tvDescription).text=article.description
             this.findViewById<TextView>(R.id.tvPublishedAt).text=article.publishedAt
-            setOnItemClickListen {
+            setOnClickListener {
+                Log.d("TAG", "onBindViewHolder: -----------------------------> $it")
                 onItemClickListener?.let { it(article) }
 
             }

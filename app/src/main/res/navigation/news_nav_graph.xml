@@ -44,6 +44,10 @@
     </fragment>
     <fragment
         android:id="@+id/articalFragment"
-        android:name="com.example.newsappex.ui.frgament.ArticalFragment"
-        android:label="ArticalFragment" />
+        android:name="com.example.newsappex.ui.frgament.ArticleFragment"
+        android:label="ArticalFragment" >
+        <argument
+            android:name="article"
+            app:argType="com.example.newsappex.mbos.Article" />
+    </fragment>
 </navigation>

@@ -3,6 +3,7 @@ package com.example.newsappex.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newsappex.mbos.Article
 import com.example.newsappex.mbos.NewsResponse
 import com.example.newsappex.repo.NewsRepo
 import com.example.newsappex.utils.Resource
@@ -21,6 +22,9 @@ class NewsViewModel(val newsRepo: NewsRepo) : ViewModel() {
     val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var searchNewsPage = 1
 
+    val savedNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    var savedNewsNewsPage = 1
+
     init {
         getBrakingNews("IN")
     }
@@ -38,6 +42,20 @@ class NewsViewModel(val newsRepo: NewsRepo) : ViewModel() {
         val response = newsRepo.searchNews(query, searchNewsPage)
         searchNews.postValue(handleSearchNewsResponse(response))
     }
+
+    fun savedArticle(article: Article)= viewModelScope.launch {
+//        savedNews.postValue(Resource.Loading())
+        val response=newsRepo.upsert(article)
+
+    }
+    fun deleteSavedArticle(article: Article)= viewModelScope.launch {
+//        savedNews.postValue(Resource.Loading())
+        val response=newsRepo.deleteArticle(article)
+
+    }
+
+    fun getSavedNews()=newsRepo.getAllSavedNews()
+
     private fun handleResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
 
         if (response.isSuccessful) {
